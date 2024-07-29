@@ -1,0 +1,121 @@
+Updates to keyboard shortcuts … On Thursday 1 August 2024, Drive keyboard shortcuts will be updated to give you first-letter navigation.Learn more
+package rowtraspositioncipher;
+
+import java.util.*;
+import java.util.Collections;
+import java.util.Scanner;
+
+/**
+ *
+ * @author ghadeer
+ */
+public class RowTraspositionCipher {
+
+    private static Scanner s;
+
+    public static void main(String[] args) {
+        s = new Scanner(System.in);
+        System.out.print("Enter your text :");
+        String text = s.nextLine();
+        System.out.print("Enter the key :");
+        int key = s.nextInt();
+        System.out.println("Type E : for Encryption" + "\n" + "type D : for decryption");
+        String choice = s.next();
+        choice = choice.toUpperCase();
+        switch (choice) {
+            case "E": {
+                System.out.println("Ciphertext :" + encrytion(text, key));
+
+                break;
+            }
+            case "D": {
+                System.out.println("Plaintext :" + decryption(text, key));
+
+                break;
+            }
+            default:
+                System.out.println("try again pls");
+        }
+
+    }
+
+    public static String encrytion(String plainText, int key) {
+        plainText = plainText.replaceAll("\\s", "").toUpperCase();
+
+        int keyLength = String.valueOf(key).length();
+        int plainTextLength = plainText.length();
+        int rows = (int) Math.ceil((double) plainTextLength / keyLength);
+        char[][] arr1 = new char[rows][keyLength];
+        int place = 0;
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < keyLength; j++) {
+                if (place < plainTextLength) {
+                    arr1[i][j] = plainText.charAt(place++);
+                } else {
+                    arr1[i][j] = 'X';
+                }
+            }
+
+        }
+
+        ArrayList<Integer> keyList = new ArrayList<>();
+        int result = key;
+        while (result > 0) {
+            keyList.add(result % 10);
+            result = result / 10;
+
+        }
+        Collections.reverse(keyList);
+
+        StringBuilder cipherText = new StringBuilder();
+        for (int k : keyList) {
+            int column = k - 1;
+            for (int c = 0; c < rows; c++) {
+                cipherText.append(arr1[c][column]);
+
+            }
+
+        }
+
+        return cipherText.toString();
+    }
+
+    public static String decryption(String cipherText, int key) {
+        cipherText = cipherText.replaceAll("\\s", "").toUpperCase();
+
+        int keyLength = String.valueOf(key).length();
+        int cipherTextLength = cipherText.length();
+        int rows = (int) Math.ceil((double) cipherTextLength / keyLength);
+
+        char[][] arr2 = new char[rows][keyLength];
+
+        ArrayList<Integer> keyList = new ArrayList<>();
+        int result = key;
+        while (result > 0) {
+            keyList.add(result % 10);
+            result = result / 10;
+        }
+        Collections.reverse(keyList);
+        int column = 0;
+        int place = 0;
+        for (int k : keyList) {
+            column = k - 1;
+            for (int j = 0; j < rows; j++) {
+                if (place <= cipherTextLength) {
+                }
+                arr2[j][column] = cipherText.charAt(place++);
+            }
+        }
+        String PlainText = "";
+        for (int i = 0; i < arr2.length; i++) {
+            for (int j = 0; j < arr2[i].length; j++) {
+                PlainText = PlainText + arr2[i][j];
+            }
+        }
+
+        return PlainText;
+
+    }
+
+}
